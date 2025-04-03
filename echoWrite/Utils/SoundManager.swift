@@ -9,38 +9,32 @@ import Foundation
 import Speech
 import AVFoundation
 
-class SoundManager {
+actor SoundManager {
     static let shared = SoundManager()
     
-    private init() {}
+    func requestSpeechRecognitionPermission() async -> (Bool, Bool) {
+        async let speechGranted = isSpeechRecognitionAuthorized()
+        async let micGranted = isMicrophoneAccessGranted()
+        return await (speechGranted, micGranted)
+    }
     
-    func requestSpeechRecognitionPermission(completion: @escaping (Bool, Bool) -> Void) {
-        isSpeechRecognitionAuthorized { isSpeechAuthorized in
-            self.isMicrophoneAccessGranted { isMicAuthorized in
-                completion(isSpeechAuthorized, isMicAuthorized)
+    private func isSpeechRecognitionAuthorized() async -> Bool {
+        await withCheckedContinuation { continuation in
+            SFSpeechRecognizer.requestAuthorization { status in
+                continuation.resume(returning: status == .authorized)
             }
         }
     }
     
-    func isSpeechRecognitionAuthorized(completion: @escaping (Bool) -> Void) {
-        SFSpeechRecognizer.requestAuthorization { status in
-            DispatchQueue.main.async {
-                completion(status == .authorized)
-            }
-        }
-    }
-    
-    func isMicrophoneAccessGranted(completion: @escaping (Bool) -> Void) {
-        if #available(iOS 17.0, *) {
-            AVAudioApplication.requestRecordPermission(completionHandler: { granted in
-                DispatchQueue.main.async {
-                    completion(granted)
+    private func isMicrophoneAccessGranted() async -> Bool {
+        await withCheckedContinuation { continuation in
+            if #available(iOS 17.0, *) {
+                AVAudioApplication.requestRecordPermission { granted in
+                    continuation.resume(returning: granted)
                 }
-            })
-        } else {
-            AVAudioSession.sharedInstance().requestRecordPermission { granted in
-                DispatchQueue.main.async {
-                    completion(granted)
+            } else {
+                AVAudioSession.sharedInstance().requestRecordPermission { granted in
+                    continuation.resume(returning: granted)
                 }
             }
         }

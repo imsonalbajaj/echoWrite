@@ -12,23 +12,21 @@ struct SplashView: View {
     @State private var showProgressView = false
     @State private var showPermissionDeniedAlert = false
     @State private var onAppearCalled = false
-
+    
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
-
+            
             VStack {
                 Text("Welcome to EchoWrite")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding()
-
+                
                 if showProgressView {
                     ProgressView()
                         .frame(height: 50.0)
-                        .onAppear {
-                            requestPermissions()
-                        }
+                        .task { await requestPermissions() }
                 } else {
                     Button {
                         showProgressView = true
@@ -68,20 +66,21 @@ struct SplashView: View {
             Text("Please allow Speech Recognition and Microphone access in Settings to continue.")
         }
     }
-
-    private func requestPermissions() {
-        SoundManager.shared.requestSpeechRecognitionPermission { speechGranted, micGranted in
-            if speechGranted && micGranted {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    showHomeView = true
-                }
-            } else {
-                // Show alert if permissions are denied
+    
+    private func requestPermissions() async {
+        let (speechGranted, micGranted) = await SoundManager.shared.requestSpeechRecognitionPermission()
+        if speechGranted && micGranted {
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            await MainActor.run {
+                showHomeView = true
+            }
+        } else {
+            await MainActor.run {
                 showPermissionDeniedAlert = true
             }
         }
     }
-
+    
     private func openAppSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(url)
