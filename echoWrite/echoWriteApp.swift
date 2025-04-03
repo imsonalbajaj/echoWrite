@@ -23,9 +23,15 @@ struct echoWriteApp: App {
         }
     }()
 
+    @State private var showHomeView = false
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if showHomeView {
+                HomeView()
+            } else {
+                SplashView(showHomeView: $showHomeView)
+            }
         }
         .modelContainer(sharedModelContainer)
     }
