@@ -7,32 +7,76 @@
 
 import SwiftUI
 import Lottie
+import SwiftData
 
 struct HomeView: View {
-    @ObservedObject var viewModel = HomeViewModel()
-    @State private var path: [NavScreen] = []
-    @State private var startHear = false
+    @Environment(\.modelContext) private var modelContext
+    @Query private var items: [SummaryItem]
     
+    @ObservedObject var viewModel = HomeViewModel()
+    @State private var startHear = false
+    let navHeading = "Your Summaries"
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack() {
             VStack {
+                ZStack(alignment: .top) {
+                    VStack {
+                        List {
+                            ForEach(items) { item in
+                                NavigationLink {
+                                    Text(item.heading)
+                                        .foregroundStyle(Color.primary)
+                                } label: {
+                                    Text(item.heading)
+                                        .foregroundStyle(Color.primary)
+                                }
+                            }
+                        }
+                        .listStyle(.plain)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                EditButton()
+                            }
+                        }
+                        
+                        Spacer()
+                    }
+                    
+                    if startHear {
+                        Color(.systemBackground)
+                        
+                        VStack {
+                            Text(viewModel.transcribedText)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .foregroundStyle(Color.primary)
+                                .padding()
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color(.secondarySystemBackground))
+                        }
+                        .padding()
+                        .shadow(color: Color(.systemGroupedBackground), radius: 0.1)
+                    }
+                }
+                
                 Spacer()
                 
-                Text(viewModel.transcribedText)
-                    .foregroundStyle(Color.black)
-                    
                 Button {
                     startHear.toggle()
                     
                     if startHear {
                         viewModel.startListening()
                     } else {
+                        addSummary()
                         viewModel.stopListening()
                     }
                 } label: {
                     if startHear {
-                        LottieView(animation: .named("micAnimated"))
+                        LottieView(animation: .named(MIC_ANIMATED))
                             .looping()
                     } else {
                         Image(systemName: MICROPHONE)
@@ -41,16 +85,27 @@ struct HomeView: View {
                             .fontWeight(.bold)
                     }
                 }
+                
                 .frame(width: 64, height: 64)
+                .padding(.bottom, BOTTOM_INSET)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .background(
-                    Color.teal
-                        .frame(height: 60)
+                    LinearGradient(colors: [.teal, .cyan, .green], startPoint: .topLeading, endPoint: .bottomTrailing)
                 )
             }
-            .navigationTitle("Your Summaries")
+            .ignoresSafeArea(edges: .bottom)
+            .navigationTitle(navHeading)
         }
         
     }
+    
+    private func addSummary() {
+        guard viewModel.transcribedText.count > 0 else { return }
+        let text = viewModel.transcribedText
+        
+        withAnimation {
+            let newItem = SummaryItem(timestamp: Date(), heading: text, summary: "", text: "")
+            modelContext.insert(newItem)
+        }
+    }
 }
-

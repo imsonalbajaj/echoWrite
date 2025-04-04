@@ -14,6 +14,7 @@ class HomeViewModel: ObservableObject {
 
     func startListening() {
         Task {
+            transcribedText = ""
             let stream = await speechRecognizer.transcriptionStream()
 
             for await text in stream {
@@ -26,6 +27,7 @@ class HomeViewModel: ObservableObject {
     func stopListening() {
         Task {
             await speechRecognizer.stopListening()
+            transcribedText = ""
         }
     }
 }

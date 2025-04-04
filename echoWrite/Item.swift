@@ -9,10 +9,16 @@ import Foundation
 import SwiftData
 
 @Model
-final class Item {
-    var timestamp: Date
+final class SummaryItem {
+    var timestamp: Double
+    var heading: String
+    var summary: String
+    var text: String
     
-    init(timestamp: Date) {
-        self.timestamp = timestamp
+    init(timestamp: Date, heading: String, summary: String, text: String) {
+        self.timestamp = timestamp.timeIntervalSince1970
+        self.heading = heading
+        self.summary = summary
+        self.text = text
     }
 }
