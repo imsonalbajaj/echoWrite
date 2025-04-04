@@ -9,28 +9,27 @@ import SwiftUI
 import Lottie
 
 struct HomeView: View {
+    @ObservedObject var viewModel = HomeViewModel()
     @State private var path: [NavScreen] = []
     @State private var startHear = false
+    
     
     var body: some View {
         NavigationStack(path: $path) {
             VStack {
-                List {
-                    Text("1")
-                    Text("1")
-                    Text("1")
-                    Text("1")
-                    Text("1")
-                    
-                }
-                .listStyle(.plain)
-                
                 Spacer()
                 
-                
+                Text(viewModel.transcribedText)
+                    .foregroundStyle(Color.black)
                     
                 Button {
                     startHear.toggle()
+                    
+                    if startHear {
+                        viewModel.startListening()
+                    } else {
+                        viewModel.stopListening()
+                    }
                 } label: {
                     if startHear {
                         LottieView(animation: .named("micAnimated"))
@@ -54,3 +53,4 @@ struct HomeView: View {
         
     }
 }
+
