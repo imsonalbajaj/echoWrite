@@ -23,13 +23,20 @@ struct echowriteApp: App {
         }
     }()
 
+    @State private var showHomeView = false
+
     var body: some Scene {
         WindowGroup {
-            Text("Hey There")
+            if showHomeView {
+                HomeView()
+            } else {
+                SplashView(showHomeView: $showHomeView)
+            }
         }
         .modelContainer(sharedModelContainer)
     }
 }
+
 /*
  #Preview {
      ContentView()
