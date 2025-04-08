@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		57464A042DA54BC90016AF14 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 57464A032DA54BC90016AF14 /* Lottie */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		57CB1E3C2DA541D500681AA0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57464A042DA54BC90016AF14 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = echowrite;
 			packageProductDependencies = (
+				57464A032DA54BC90016AF14 /* Lottie */,
 			);
 			productName = echowrite;
 			productReference = 57CB1E292DA541D300681AA0 /* echowrite.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 57CB1E202DA541D300681AA0;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				57464A022DA54BC90016AF14 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 57CB1E2A2DA541D300681AA0 /* Products */;
 			projectDirPath = "";
@@ -398,6 +407,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"echowrite/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone for recording speech";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need speech recognition to transcribe your voice into text";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -427,6 +437,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"echowrite/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone for recording speech";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need speech recognition to transcribe your voice into text";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -554,6 +565,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		57464A022DA54BC90016AF14 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		57464A032DA54BC90016AF14 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 57464A022DA54BC90016AF14 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 57CB1E212DA541D300681AA0 /* Project object */;
 }
