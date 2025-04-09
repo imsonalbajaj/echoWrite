@@ -17,40 +17,54 @@ struct SummaryView: View {
     var body: some View {
         
         VStack(alignment: .leading) {
-            Text(summaryItem.heading)
-                .foregroundStyle(Color.primary)
-                .font(.title3)
-                .fontWeight(.semibold)
+            if summaryItem.heading != "" {
+                Text(summaryItem.heading)
+                    .foregroundStyle(Color.primary)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+            }
             
-            ScrollView {
-                Button {
-                    showFullTranscription.toggle()
-                } label: {
-                    if showFullTranscription {
-                        VStack {
-                            Text("Transcription")
-                                .foregroundStyle(Color.secondary)
-                                .font(.headline)
-                            
-                            Text(summaryItem.text)
+            if summaryItem.summary != "" {
+                ScrollView {
+                    Button {
+                        showFullTranscription.toggle()
+                    } label: {
+                        if showFullTranscription {
+                            VStack {
+                                Text("Transcription")
+                                    .foregroundStyle(Color.secondary)
+                                    .font(.headline)
+                                
+                                Text(summaryItem.text)
+                                    .foregroundStyle(Color.primary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        } else {
+                            VStack {
+                                Text("Summary")
+                                    .foregroundStyle(Color.secondary)
+                                    .font(.headline)
+                                
+                                Group {
+                                    Text(summaryItem.summary)
+                                    +
+                                    Text(".....")
+                                }
                                 .foregroundStyle(Color.primary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                    } else {
-                        VStack {
-                            Text("Summary")
-                                .foregroundStyle(Color.secondary)
-                                .font(.headline)
-                                                        
-                            Group {
-                                Text(summaryItem.text)
-                                +
-                                Text(".....")
                             }
-                            .foregroundStyle(Color.primary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
+                }
+            } else {
+                VStack {
+                    Text("Transcription")
+                        .foregroundStyle(Color.secondary)
+                        .font(.headline)
+                    
+                    Text(summaryItem.text)
+                        .foregroundStyle(Color.primary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             

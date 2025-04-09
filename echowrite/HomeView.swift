@@ -30,7 +30,7 @@ struct HomeView: View {
                                 NavigationLink {
                                     SummaryView(summaryItem: item)
                                 } label: {
-                                    Text(item.heading)
+                                    Text(item.heading != "" ? item.heading : item.text)
                                         .foregroundStyle(Color.primary)
                                         .lineLimit(2)
                                 }
