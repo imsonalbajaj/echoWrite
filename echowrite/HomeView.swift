@@ -11,6 +11,9 @@ import SwiftData
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.editMode) private var editMode
+    @State private var internalEditMode: EditMode = .inactive
+    
     @Query private var items: [SummaryItem]
     
     @ObservedObject var viewModel = HomeViewModel()
@@ -32,13 +35,16 @@ struct HomeView: View {
                                         .lineLimit(2)
                                 }
                             }
+                            .onDelete(perform: deleteItems)
                         }
                         .listStyle(.plain)
                         .toolbar {
                             ToolbarItem(placement: .navigationBarTrailing) {
                                 EditButton()
+                                    .disabled(startHear)
                             }
                         }
+                        .environment(\.editMode, $internalEditMode)
                         
                         Spacer()
                     }
@@ -65,36 +71,46 @@ struct HomeView: View {
                 
                 Spacer()
                 
-                Button {
-                    startHear.toggle()
-                    
-                    if startHear {
-                        viewModel.startListening()
-                    } else {
-                        viewModel.saveSummary(using: modelContext)
-                        viewModel.stopListening()
+                if internalEditMode != .active {
+
+                    Button {
+                        startHear.toggle()
+                        
+                        if startHear {
+                            viewModel.startListening()
+                        } else {
+                            viewModel.saveSummary(using: modelContext)
+                            viewModel.stopListening()
+                        }
+                    } label: {
+                        if startHear {
+                            LottieView(animation: .named(MIC_ANIMATED))
+                                .looping()
+                        } else {
+                            Image(systemName: MICROPHONE)
+                                .foregroundStyle(Color.white)
+                                .font(.title)
+                                .fontWeight(.bold)
+                        }
                     }
-                } label: {
-                    if startHear {
-                        LottieView(animation: .named(MIC_ANIMATED))
-                            .looping()
-                    } else {
-                        Image(systemName: MICROPHONE)
-                            .foregroundStyle(Color.white)
-                            .font(.title)
-                            .fontWeight(.bold)
-                    }
+                    .disabled(editMode?.wrappedValue == .active)
+                    .frame(width: 64, height: 64)
+                    .padding(.bottom, BOTTOM_INSET)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .background(
+                        LinearGradient(colors: [.teal, .cyan, .green], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
                 }
-                
-                .frame(width: 64, height: 64)
-                .padding(.bottom, BOTTOM_INSET)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .background(
-                    LinearGradient(colors: [.teal, .cyan, .green], startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
             }
             .ignoresSafeArea(edges: .bottom)
             .navigationTitle(navHeading)
+        }
+    }
+    
+    private func deleteItems(at offsets: IndexSet) {
+        for index in offsets {
+            let item = items[index]
+            modelContext.delete(item)
         }
     }
 }

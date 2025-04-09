@@ -15,37 +15,48 @@ struct SummaryView: View {
     @State var showFullTranscription: Bool = false
     
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            VStack(alignment: .leading) {
-                Text(summaryItem.heading)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                
-                ScrollView {
+        
+        VStack(alignment: .leading) {
+            Text(summaryItem.heading)
+                .foregroundStyle(Color.primary)
+                .font(.title3)
+                .fontWeight(.semibold)
+            
+            ScrollView {
+                Button {
+                    showFullTranscription.toggle()
+                } label: {
                     if showFullTranscription {
-                        Text("Transcription")
-                            .font(.headline)
-                        
-                        Text(summaryItem.text)
+                        VStack {
+                            Text("Transcription")
+                                .foregroundStyle(Color.secondary)
+                                .font(.headline)
+                            
+                            Text(summaryItem.text)
+                                .foregroundStyle(Color.primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     } else {
-                        Text("Summary")
-                            .font(.headline)
-                        
-                        Text(summaryItem.text)
+                        VStack {
+                            Text("Summary")
+                                .foregroundStyle(Color.secondary)
+                                .font(.headline)
+                                                        
+                            Group {
+                                Text(summaryItem.text)
+                                +
+                                Text(".....")
+                            }
+                            .foregroundStyle(Color.primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
                 }
-                
-                
-                Spacer()
             }
-            .padding()
             
-            Button {
-                showFullTranscription.toggle()
-            } label: {
-                Image.getSystemImage(showFullTranscription ? .arrowshape_right_fill : .arrowshape_left)
-                    .foregroundStyle(Color(showFullTranscription ? CustomColor.greenBorder.rawValue : CustomColor.dark216.rawValue))
-            }
+            Spacer()
         }
+        .padding()
     }
+    
 }
